@@ -1,6 +1,6 @@
 # notes_organizer
 
-A new Flutter project.
+Simple application for easy notes organization on Flutter (Dart).
 
 ## Getting Started
 
