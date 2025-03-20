@@ -37,5 +37,6 @@
     "xcconfig",
     "xcuserdata"
   ],
-  "cmake.ignoreCMakeListsMissing": true
+  "cmake.ignoreCMakeListsMissing": true,
+  "docwriter.style": "Auto-detect"
 }

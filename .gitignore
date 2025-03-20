@@ -1,6 +1,9 @@
 # Miscellaneous
 *.class
 *.lock
+# Because of application development:
+!pubspec.lock
+
 *.log
 *.pyc
 *.swp
