@@ -1,16 +1,9 @@
-# notes_organizer
+# Notes organizer
 
 Simple application for easy notes organization on Flutter (Dart).
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Sources
+* [Flaticon](https://www.flaticon.com/)
+  * [Sticky notes icons (by *Freepik*)](https://www.flaticon.com/free-icon/sticky-notes_3209265)
+  * [Paper icons (by *Pixel perfect*)](https://www.flaticon.com/free-icon/post-it_889669)
+* [Comfortaa](https://fonts.google.com/specimen/Comfortaa) (font)
