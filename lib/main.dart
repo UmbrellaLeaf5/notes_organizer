@@ -46,13 +46,7 @@ class _MainHomePageState extends State<MainHomePage> {
           : ListView.builder(
               itemCount: _notes.length,
               itemBuilder: (context, index) {
-                return Card(
-                  margin: const EdgeInsets.all(4.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(_notes[index]),
-                  ),
-                );
+                return Note(noteContent: _notes[index]);
               },
             ),
       floatingActionButton: Padding(
@@ -108,6 +102,24 @@ class _MainHomePageState extends State<MainHomePage> {
           ],
         );
       },
+    );
+  }
+}
+
+/// MEANS: класс виджета заметки
+class Note extends StatelessWidget {
+  final String noteContent;
+
+  const Note({super.key, required this.noteContent});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(4.0),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(noteContent),
+      ),
     );
   }
 }
