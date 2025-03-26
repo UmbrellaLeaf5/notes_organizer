@@ -1,0 +1,50 @@
+name: Deploy Flutter Web to GitHub Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main 
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - run: flutter pub get
+
+      - run: flutter build web --release --base-href /${{ github.event.repository.name }}/
+
+      # - name: Deploy to Output Branch
+      #   uses: peaceiris/actions-gh-pages@v4
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: ./build/web
+      #     publish_branch: output
+
+      #     force_orphan: true
+      #     commit_message: 'publish to gh-pages'
+
+      - name: Upload
+        uses: actions/upload-pages-artifact@v3
+        with:
+            path: './build/web/'
+  
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Deploy To GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
