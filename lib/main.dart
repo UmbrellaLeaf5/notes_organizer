@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 
 import 'classes.dart';
@@ -65,19 +68,51 @@ class _MainHomePageState extends State<MainHomePage> {
                 );
               },
             ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(left: 10),
-        child: FloatingActionButton(
-          onPressed: () {
-            _showAddNoteDialog(context);
-          },
-          tooltip: "Add Note",
-          backgroundColor: Colors.grey[800],
-          child: const Icon(Icons.add),
+      floatingActionButton: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FloatingActionButton(
+              onPressed: () => _showAddNoteDialog(context),
+              tooltip: "Add Note",
+              backgroundColor: Colors.grey[800],
+              child: const Icon(Icons.add),
+            ),
+            FloatingActionButton(
+              onPressed: _importTXTFiles,
+              tooltip: "Import TXT files",
+              backgroundColor: Colors.grey[800],
+              child: const Icon(Icons.folder),
+            ),
+          ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+  }
+
+  Future<void> _importTXTFiles() async {
+    String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+
+    if (selectedDirectory != null) {
+      final dir = Directory(selectedDirectory);
+      List<FileSystemEntity> files = dir.listSync(recursive: false);
+
+      List<Note> importedNotes = [];
+
+      for (var file in files) {
+        if (file is File && path.extension(file.path) == '.txt') {
+          importedNotes.add(Note(
+              title: path.basenameWithoutExtension(file.path),
+              text: await file.readAsString()));
+        }
+      }
+
+      setState(() {
+        _notes.addAll(importedNotes);
+      });
+    }
   }
 
   Future<void> _showAddNoteDialog(BuildContext context) async {
