@@ -43,13 +43,16 @@ class _MainHomePageState extends State<MainHomePage> {
           : ListView.builder(
               itemCount: _notes.length,
               itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
+                return NotePreview(
+                  note: _notes[index],
+                  onEdit: () {
                     _showEditNoteDialog(context, index);
                   },
-                  child: NotePreview(
-                    note: _notes[index],
-                  ),
+                  onDelete: () {
+                    setState(() {
+                      _notes.removeAt(index);
+                    });
+                  },
                 );
               },
             ),
@@ -110,33 +113,65 @@ class Note {
 
 class NotePreview extends StatelessWidget {
   final Note note;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
-  const NotePreview({super.key, required this.note});
+  const NotePreview({
+    super.key,
+    required this.note,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.all(4.0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              note.title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              overflow: TextOverflow.ellipsis,
-            ),
-            if (note.text.isNotEmpty) ...[
-              const SizedBox(height: 8.0),
-              Text(
-                note.text,
-                style: const TextStyle(fontSize: 14.0),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+    return GestureDetector(
+      onTap: onEdit,
+      child: Card(
+        margin: const EdgeInsets.all(4.0),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      note.title,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  PopupMenuButton<String>(
+                    onSelected: (value) {
+                      if (value == 'edit') onEdit();
+                      if (value == 'delete') onDelete();
+                    },
+                    itemBuilder: (BuildContext context) => [
+                      const PopupMenuItem(
+                        value: 'edit',
+                        child: Text('Edit'),
+                      ),
+                      const PopupMenuItem(
+                        value: 'delete',
+                        child: Text('Delete'),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ]
-          ],
+              if (note.text.isNotEmpty) ...[
+                const SizedBox(height: 8.0),
+                Text(
+                  note.text,
+                  style: const TextStyle(fontSize: 14.0),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ],
+            ],
+          ),
         ),
       ),
     );
