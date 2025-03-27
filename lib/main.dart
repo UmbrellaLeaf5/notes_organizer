@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'widgets/dialogs.dart';
+import 'widgets/previews.dart';
 
 void main() {
   runApp(const MainApp());
@@ -145,6 +147,8 @@ class NotePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey iconKey = GlobalKey();
+
     return GestureDetector(
       onTap: onEdit,
       onLongPressStart: (details) {
@@ -170,9 +174,14 @@ class NotePreview extends StatelessWidget {
                     ),
                   ),
                   IconButton(
+                    key: iconKey,
                     icon: const Icon(Icons.more_vert),
                     onPressed: () {
-                      _showMenu(context, const Offset(0, 0));
+                      final RenderBox renderBox = iconKey.currentContext!
+                          .findRenderObject() as RenderBox;
+                      final Offset position =
+                          renderBox.localToGlobal(Offset.zero);
+                      _showMenu(context, position);
                     },
                   ),
                 ],
