@@ -133,7 +133,7 @@ class _MainHomePageState extends State<MainHomePage> {
                 TextField(
                   decoration: const InputDecoration(
                       hintText: "Enter your Note's text here"),
-                  maxLines: 5,
+                  maxLines: 7,
                   controller: TextEditingController(text: editedText),
                   onChanged: (value) {
                     editedText = value;
@@ -177,11 +177,6 @@ class NotePreview extends StatelessWidget {
 
   const NotePreview({super.key, required this.note});
 
-  String _getFirstLines(String text, {int amount = 3}) {
-    List<String> lines = text.split('\n');
-    return lines.take(amount).join('\n');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -194,12 +189,17 @@ class NotePreview extends StatelessWidget {
             Text(
               note.title,
               style: const TextStyle(fontWeight: FontWeight.bold),
+              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 8.0),
-            Text(
-              _getFirstLines(note.text),
-              style: const TextStyle(fontSize: 14.0),
-            ),
+            if (note.text.isNotEmpty) ...[
+              const SizedBox(height: 8.0),
+              Text(
+                note.text,
+                style: const TextStyle(fontSize: 14.0),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ]
           ],
         ),
       ),
