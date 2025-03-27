@@ -1,10 +1,13 @@
 import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
-import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:path/path.dart' as path;
 
 import 'classes.dart';
 
+import 'widgets/buttons.dart';
 import 'widgets/dialogs.dart';
 import 'widgets/previews.dart';
 
@@ -68,31 +71,33 @@ class _MainHomePageState extends State<MainHomePage> {
                 );
               },
             ),
-      floatingActionButton: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            FloatingActionButton(
+      floatingActionButton: kIsWeb
+          ? AddNoteButton(
               onPressed: () => _showAddNoteDialog(context),
-              tooltip: "Add Note",
-              backgroundColor: Colors.grey[800],
-              child: const Icon(Icons.add),
+            )
+          : Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AddNoteButton(
+                    onPressed: () => _showAddNoteDialog(context),
+                  ),
+                  ImportFilesButton(
+                    onPressed: _importTXTFiles,
+                  ),
+                ],
+              ),
             ),
-            FloatingActionButton(
-              onPressed: _importTXTFiles,
-              tooltip: "Import TXT files",
-              backgroundColor: Colors.grey[800],
-              child: const Icon(Icons.folder),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: kIsWeb
+          ? FloatingActionButtonLocation.startFloat
+          : FloatingActionButtonLocation.centerFloat,
     );
   }
 
   Future<void> _importTXTFiles() async {
+    if (kIsWeb) return;
+
     String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
 
     if (selectedDirectory != null) {
