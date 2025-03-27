@@ -18,7 +18,12 @@ class MainApp extends StatelessWidget {
       title: "Notes organizer",
       theme: ThemeData.dark(useMaterial3: true).copyWith(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.deepPurple, brightness: Brightness.dark),
+          seedColor: Colors.deepPurple,
+          brightness: Brightness.dark,
+        ),
+        textTheme: ThemeData.dark().textTheme.apply(
+              fontFamily: 'Comfortaa',
+            ),
       ),
       debugShowCheckedModeBanner: false,
       home: const MainHomePage(),
