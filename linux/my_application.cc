@@ -46,6 +46,13 @@ static void my_application_activate(GApplication* application) {
     gtk_window_set_title(window, "notes_organizer");
 
   gtk_window_set_default_size(window, 1280, 720);
+
+  const char* icon_path = "assets/images/sticky-notes.png";
+  if (g_file_test(icon_path, G_FILE_TEST_EXISTS))
+    gtk_window_set_icon_from_file(window, icon_path, NULL);
+  else
+    g_warning("Icon file not found: %s", icon_path);
+
   gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
