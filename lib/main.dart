@@ -29,24 +29,27 @@ class MainHomePage extends StatefulWidget {
 }
 
 class _MainHomePageState extends State<MainHomePage> {
-  final List<String> _notesTitles = [];
-  final List<String> _notesTexts = [];
+  final List<Note> _notes = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // IDK: возможно, потом сделаю покрасивее
       appBar: AppBar(
         title: const Text("Notes Organizer"),
       ),
-      body: _notesTitles.isEmpty
-          // если заметок нет, просто выводим текст по центру об этом
+      body: _notes.isEmpty
           ? const Center(child: Text("No Notes yet..."))
-          // если они есть, отображаем с помощью ListView
           : ListView.builder(
-              itemCount: _notesTitles.length,
+              itemCount: _notes.length,
               itemBuilder: (context, index) {
-                return NotePreview(noteTitle: _notesTitles[index]);
+                return GestureDetector(
+                  onTap: () {
+                    _showEditNoteDialog(context, index);
+                  },
+                  child: NotePreview(
+                    note: _notes[index],
+                  ),
+                );
               },
             ),
       floatingActionButton: Padding(
@@ -64,7 +67,6 @@ class _MainHomePageState extends State<MainHomePage> {
     );
   }
 
-  /// DOES: выводит на экран диалоговое окно создания новой заметки
   Future<void> _showAddNoteDialog(BuildContext context) async {
     String newNoteTitle = "";
 
@@ -91,10 +93,9 @@ class _MainHomePageState extends State<MainHomePage> {
             TextButton(
               child: const Text("Add"),
               onPressed: () {
-                // добавляем только, если есть какой-то текст
                 if (newNoteTitle.isNotEmpty) {
                   setState(() {
-                    _notesTitles.add(newNoteTitle);
+                    _notes.add(Note(title: newNoteTitle));
                   });
                   Navigator.of(context).pop();
                 }
@@ -105,13 +106,76 @@ class _MainHomePageState extends State<MainHomePage> {
       },
     );
   }
+
+  Future<void> _showEditNoteDialog(BuildContext context, int index) async {
+    String editedTitle = _notes[index].title;
+    String editedText = _notes[index].text;
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Edit Note"),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                      hintText: "Enter your Note's title here"),
+                  controller: TextEditingController(text: editedTitle),
+                  onChanged: (value) {
+                    editedTitle = value;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  decoration: const InputDecoration(
+                      hintText: "Enter your Note's text here"),
+                  maxLines: 5,
+                  controller: TextEditingController(text: editedText),
+                  onChanged: (value) {
+                    editedText = value;
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("Save"),
+              onPressed: () {
+                setState(() {
+                  _notes[index] = Note(title: editedTitle, text: editedText);
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class Note {
+  String title;
+  String text;
+
+  Note({required this.title, this.text = ""});
 }
 
 class NotePreview extends StatelessWidget {
-  final String noteTitle;
-  final String noteText;
+  final Note note;
 
-  const NotePreview({super.key, required this.noteTitle, this.noteText = ""});
+  const NotePreview({super.key, required this.note});
 
   String _getFirstLines(String text, {int amount = 3}) {
     List<String> lines = text.split('\n');
@@ -128,12 +192,12 @@ class NotePreview extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              noteTitle,
+              note.title,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8.0),
             Text(
-              _getFirstLines(noteText),
+              _getFirstLines(note.text),
               style: const TextStyle(fontSize: 14.0),
             ),
           ],
