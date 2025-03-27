@@ -68,40 +68,15 @@ class _MainHomePageState extends State<MainHomePage> {
   }
 
   Future<void> _showAddNoteDialog(BuildContext context) async {
-    String newNoteTitle = "";
-
-    return showDialog<void>(
+    showDialog<void>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Add a new Note"),
-          content: TextField(
-            autofocus: true,
-            decoration:
-                const InputDecoration(hintText: "Enter your Note's title here"),
-            onChanged: (value) {
-              newNoteTitle = value;
-            },
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Cancel"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text("Add"),
-              onPressed: () {
-                if (newNoteTitle.isNotEmpty) {
-                  setState(() {
-                    _notes.add(Note(title: newNoteTitle));
-                  });
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
+        return AddNoteWidget(
+          onNoteAdded: (title) {
+            setState(() {
+              _notes.add(Note(title: title));
+            });
+          },
         );
       },
     );
@@ -161,6 +136,57 @@ class _MainHomePageState extends State<MainHomePage> {
           ],
         );
       },
+    );
+  }
+}
+
+class AddNoteWidget extends StatefulWidget {
+  final Function(String) onNoteAdded;
+
+  const AddNoteWidget({super.key, required this.onNoteAdded});
+
+  @override
+  AddNoteWidgetState createState() => AddNoteWidgetState();
+}
+
+class AddNoteWidgetState extends State<AddNoteWidget> {
+  String newNoteTitle = "";
+
+  void _addNote() {
+    if (newNoteTitle.isNotEmpty) {
+      widget.onNoteAdded(newNoteTitle);
+      Navigator.of(context).pop();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text("Add a new Note"),
+      content: TextField(
+        autofocus: true,
+        decoration: const InputDecoration(
+          hintText: "Enter your Note's title here",
+        ),
+        onChanged: (value) {
+          setState(() {
+            newNoteTitle = value;
+          });
+        },
+        onSubmitted: (_) => _addNote(),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const Text("Cancel"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          onPressed: _addNote,
+          child: const Text("Add"),
+        ),
+      ],
     );
   }
 }
