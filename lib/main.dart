@@ -123,10 +123,36 @@ class NotePreview extends StatelessWidget {
     required this.onDelete,
   });
 
+  void _showMenu(BuildContext context, Offset position) {
+    showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(
+          position.dx, position.dy, position.dx, position.dy),
+      items: [
+        PopupMenuItem(
+          value: 'edit',
+          onTap: onEdit,
+          child: const Text('Edit'),
+        ),
+        PopupMenuItem(
+          value: 'delete',
+          onTap: onDelete,
+          child: const Text('Delete'),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onEdit,
+      onLongPressStart: (details) {
+        _showMenu(context, details.globalPosition);
+      },
+      onSecondaryTapUp: (details) {
+        _showMenu(context, details.globalPosition);
+      },
       child: Card(
         margin: const EdgeInsets.all(4.0),
         child: Padding(
@@ -143,21 +169,11 @@ class NotePreview extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  PopupMenuButton<String>(
-                    onSelected: (value) {
-                      if (value == 'edit') onEdit();
-                      if (value == 'delete') onDelete();
+                  IconButton(
+                    icon: const Icon(Icons.more_vert),
+                    onPressed: () {
+                      _showMenu(context, const Offset(0, 0));
                     },
-                    itemBuilder: (BuildContext context) => [
-                      const PopupMenuItem(
-                        value: 'edit',
-                        child: Text('Edit'),
-                      ),
-                      const PopupMenuItem(
-                        value: 'delete',
-                        child: Text('Delete'),
-                      ),
-                    ],
                   ),
                 ],
               ),
