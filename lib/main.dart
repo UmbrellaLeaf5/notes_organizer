@@ -11,10 +11,22 @@ import 'widgets/buttons.dart';
 import 'widgets/dialogs.dart';
 import 'widgets/previews.dart';
 
+/// Главный класс приложения "Organizer Notes"
+///
+/// Инициализирует MaterialApp с темной темой и настраивает:
+/// - Цветовую схему на основе глубокого фиолетового
+/// - Пользовательский шрифт Comfortaa
+/// - Основную страницу приложения [MainHomePage]
 void main() {
   runApp(const MainApp());
 }
 
+/// Корневой виджет приложения
+///
+/// ### Особенности:
+/// - Устанавливает темную тему Material 3
+/// - Настраивает цветовую схему
+/// - Подключает пользовательский шрифт
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
@@ -37,6 +49,12 @@ class MainApp extends StatelessWidget {
   }
 }
 
+/// Главная страница приложения с списком заметок
+///
+/// ### Состояние:
+/// - Содержит список заметок [_notes]
+/// - Управляет диалогами добавления/редактирования
+/// - Обрабатывает импорт файлов (для нативных платформ)
 class MainHomePage extends StatefulWidget {
   const MainHomePage({super.key});
 
@@ -44,7 +62,14 @@ class MainHomePage extends StatefulWidget {
   State<MainHomePage> createState() => _MainHomePageState();
 }
 
+/// Состояние главной страницы приложения
+///
+/// ### Функционал:
+/// - Отображение списка заметок или заглушки при пустом списке
+/// - Управление FloatingActionButton (разные версии для web/нативных платформ)
+/// - Обработка добавления/редактирования/удаления заметок
 class _MainHomePageState extends State<MainHomePage> {
+  /// Список заметок приложения
   final List<Note> _notes = [];
 
   @override
@@ -95,6 +120,16 @@ class _MainHomePageState extends State<MainHomePage> {
     );
   }
 
+  /// Импортирует .txt файлы из выбранной директории
+  ///
+  /// ### Особенности:
+  /// - Работает только на нативных платформах (не web)
+  /// - Каждый файл становится отдельной заметкой
+  /// - Название файла (без расширения) становится заголовком заметки
+  /// - Содержимое файла становится текстом заметки
+  ///
+  /// ### Ограничения:
+  /// - Читает только файлы из корня выбранной директории (без рекурсии)
   Future<void> _importTXTFiles() async {
     if (kIsWeb) return;
 
@@ -118,6 +153,11 @@ class _MainHomePageState extends State<MainHomePage> {
     }
   }
 
+  /// Показывает диалог добавления новой заметки
+  ///
+  /// При подтверждении:
+  /// - Создает новую заметку с введенным заголовком
+  /// - Добавляет заметку в список [_notes]
   Future<void> _showAddNoteDialog(BuildContext context) async {
     showDialog<void>(
       context: context,
@@ -133,6 +173,13 @@ class _MainHomePageState extends State<MainHomePage> {
     );
   }
 
+  /// Показывает диалог редактирования существующей заметки
+  ///
+  /// [index] - позиция редактируемой заметки в списке
+  ///
+  /// При подтверждении:
+  /// - Обновляет заголовок и текст заметки
+  /// - Сохраняет изменения в списке [_notes]
   Future<void> _showEditNoteDialog(BuildContext context, int index) async {
     showDialog<void>(
       context: context,

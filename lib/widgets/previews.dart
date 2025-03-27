@@ -2,11 +2,41 @@ import 'package:flutter/material.dart';
 
 import '../classes.dart';
 
+/// Виджет для отображения превью заметки в списке
+///
+/// ### Особенности:
+/// - Отображает заголовок и начало текста заметки
+/// - Поддерживает три способа вызова меню:
+///   1. Тап по иконке меню
+///   2. Долгое нажатие на карточку
+///   3. Правый клик (на desktop)
+/// - Показывает контекстное меню с действиями:
+///   - Редактировать
+///   - Удалить
+///
+/// ### Пример использования:
+/// ```dart
+/// NotePreview(
+///   note: note,
+///   onEdit: () => _editNote(note),
+///   onDelete: () => _deleteNote(note),
+/// )
+/// ```
 class NotePreview extends StatelessWidget {
+  /// Заметка для отображения
   final Note note;
+
+  /// Callback-функция при редактировании
   final VoidCallback onEdit;
+
+  /// Callback-функция при удалении
   final VoidCallback onDelete;
 
+  /// Создает превью заметки
+  ///
+  /// [note] - обязательный параметр, отображаемая заметка
+  /// [onEdit] - обработчик редактирования заметки
+  /// [onDelete] - обработчик удаления заметки
   const NotePreview({
     super.key,
     required this.note,
@@ -14,6 +44,14 @@ class NotePreview extends StatelessWidget {
     required this.onDelete,
   });
 
+  /// Показывает контекстное меню с действиями
+  ///
+  /// [context] - контекст BuildContext
+  /// [position] - позиция для отображения меню
+  ///
+  /// ### Доступные действия:
+  /// - Edit (вызывает [onEdit])
+  /// - Delete (вызывает [onDelete])
   void _showMenu(BuildContext context, Offset position) {
     showMenu(
       context: context,
