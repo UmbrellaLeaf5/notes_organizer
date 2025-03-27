@@ -29,8 +29,8 @@ class MainHomePage extends StatefulWidget {
 }
 
 class _MainHomePageState extends State<MainHomePage> {
-  /// MEANS: список всех заметок (их содержаний)
-  final List<String> _notes = [];
+  final List<String> _notesTitles = [];
+  final List<String> _notesTexts = [];
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +39,14 @@ class _MainHomePageState extends State<MainHomePage> {
       appBar: AppBar(
         title: const Text("Notes Organizer"),
       ),
-      body: _notes.isEmpty
+      body: _notesTitles.isEmpty
           // если заметок нет, просто выводим текст по центру об этом
-          ? const Center(child: Text("No notes yet..."))
+          ? const Center(child: Text("No Notes yet..."))
           // если они есть, отображаем с помощью ListView
           : ListView.builder(
-              itemCount: _notes.length,
+              itemCount: _notesTitles.length,
               itemBuilder: (context, index) {
-                return Note(noteContent: _notes[index]);
+                return NotePreview(noteTitle: _notesTitles[index]);
               },
             ),
       floatingActionButton: Padding(
@@ -66,18 +66,19 @@ class _MainHomePageState extends State<MainHomePage> {
 
   /// DOES: выводит на экран диалоговое окно создания новой заметки
   Future<void> _showAddNoteDialog(BuildContext context) async {
-    String newNote = "";
+    String newNoteTitle = "";
 
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Add a New Note"),
+          title: const Text("Add a new Note"),
           content: TextField(
             autofocus: true,
-            decoration: const InputDecoration(hintText: "Enter your note here"),
+            decoration:
+                const InputDecoration(hintText: "Enter your Note's title here"),
             onChanged: (value) {
-              newNote = value;
+              newNoteTitle = value;
             },
           ),
           actions: <Widget>[
@@ -91,9 +92,9 @@ class _MainHomePageState extends State<MainHomePage> {
               child: const Text("Add"),
               onPressed: () {
                 // добавляем только, если есть какой-то текст
-                if (newNote.isNotEmpty) {
+                if (newNoteTitle.isNotEmpty) {
                   setState(() {
-                    _notes.add(newNote);
+                    _notesTitles.add(newNoteTitle);
                   });
                   Navigator.of(context).pop();
                 }
@@ -106,11 +107,16 @@ class _MainHomePageState extends State<MainHomePage> {
   }
 }
 
-/// MEANS: класс виджета заметки
-class Note extends StatelessWidget {
-  final String noteContent;
+class NotePreview extends StatelessWidget {
+  final String noteTitle;
+  final String noteText;
 
-  const Note({super.key, required this.noteContent});
+  const NotePreview({super.key, required this.noteTitle, this.noteText = ""});
+
+  String _getFirstLines(String text, {int amount = 3}) {
+    List<String> lines = text.split('\n');
+    return lines.take(amount).join('\n');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +124,20 @@ class Note extends StatelessWidget {
       margin: const EdgeInsets.all(4.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Text(noteContent),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              noteTitle,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8.0),
+            Text(
+              _getFirstLines(noteText),
+              style: const TextStyle(fontSize: 14.0),
+            ),
+          ],
+        ),
       ),
     );
   }
