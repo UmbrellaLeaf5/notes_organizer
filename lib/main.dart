@@ -101,12 +101,10 @@ class _MainHomePageState extends State<MainHomePage> {
     String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
 
     if (selectedDirectory != null) {
-      final dir = Directory(selectedDirectory);
-      List<FileSystemEntity> files = dir.listSync(recursive: false);
-
       List<Note> importedNotes = [];
 
-      for (var file in files) {
+      for (var file
+          in Directory(selectedDirectory).listSync(recursive: false)) {
         if (file is File && path.extension(file.path) == '.txt') {
           importedNotes.add(Note(
               title: path.basenameWithoutExtension(file.path),

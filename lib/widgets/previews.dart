@@ -59,7 +59,7 @@ class NotePreview extends StatelessWidget {
                     child: Text(
                       note.title,
                       style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 20.0),
+                          fontWeight: FontWeight.bold, fontSize: 18.0),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -80,7 +80,7 @@ class NotePreview extends StatelessWidget {
                 const SizedBox(height: 8.0),
                 Text(
                   note.text,
-                  style: const TextStyle(fontSize: 14.0),
+                  style: const TextStyle(fontSize: 12.0),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),

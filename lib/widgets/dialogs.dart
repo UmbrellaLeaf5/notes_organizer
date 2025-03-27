@@ -109,6 +109,8 @@ class EditNoteDialogState extends State<EditNoteDialog> {
                   hintText: "Enter your Note's title here",
                 ),
                 onChanged: (value) => _editedTitle = value,
+                // используем TextEditingController,
+                // так как нужно изменять предыдущее значение
                 controller: TextEditingController()..text = _editedTitle,
               ),
               const SizedBox(height: 16),
@@ -118,8 +120,6 @@ class EditNoteDialogState extends State<EditNoteDialog> {
                 ),
                 maxLines: 7,
                 onChanged: (value) => _editedText = value,
-                // используем TextEditingController,
-                // так как нужно изменять предыдущее значение
                 controller: TextEditingController()..text = _editedText,
               ),
             ],
